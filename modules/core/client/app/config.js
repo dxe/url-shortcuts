@@ -1,7 +1,7 @@
 (function (window) {
   'use strict';
 
-  var applicationModuleName = 'mean';
+  var applicationModuleName = 'dxe-short-urls';
 
   var service = {
     applicationEnvironment: window.env,
