@@ -9,69 +9,6 @@ var path = require('path'),
   passport = require('passport'),
   User = mongoose.model('User');
 
-// URLs for which user can't be redirected on signin
-var noReturnUrls = [
-  '/authentication/signin',
-  '/authentication/signup'
-];
-
-/**
- * Signup
- */
-exports.signup = function (req, res) {
-  // For security measurement we remove the roles from the req.body object
-  delete req.body.roles;
-
-  // Init user and add missing fields
-  var user = new User(req.body);
-  user.provider = 'local';
-  user.displayName = user.firstName + ' ' + user.lastName;
-
-  // Then save the user
-  user.save(function (err) {
-    if (err) {
-      return res.status(422).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      // Remove sensitive data before login
-      user.password = undefined;
-      user.salt = undefined;
-
-      req.login(user, function (err) {
-        if (err) {
-          res.status(400).send(err);
-        } else {
-          res.json(user);
-        }
-      });
-    }
-  });
-};
-
-/**
- * Signin after passport authentication
- */
-exports.signin = function (req, res, next) {
-  passport.authenticate('local', function (err, user, info) {
-    if (err || !user) {
-      res.status(422).send(info);
-    } else {
-      // Remove sensitive data before login
-      user.password = undefined;
-      user.salt = undefined;
-
-      req.login(user, function (err) {
-        if (err) {
-          res.status(400).send(err);
-        } else {
-          res.json(user);
-        }
-      });
-    }
-  })(req, res, next);
-};
-
 /**
  * Signout
  */
@@ -102,14 +39,14 @@ exports.oauthCallback = function (strategy) {
     // info.redirect_to contains inteded redirect path
     passport.authenticate(strategy, function (err, user, info) {
       if (err) {
-        return res.redirect('/authentication/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
+        return res.redirect('/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
       }
       if (!user) {
-        return res.redirect('/authentication/signin');
+        return res.redirect('/signin');
       }
       req.login(user, function (err) {
         if (err) {
-          return res.redirect('/authentication/signin');
+          return res.redirect('/signin');
         }
 
         return res.redirect(info.redirect_to || '/');
@@ -125,12 +62,6 @@ exports.saveOAuthUserProfile = function (req, providerUserProfile, done) {
   // Setup info and user objects
   var info = {};
   var user;
-
-  // Set redirection path on session.
-  // Do not redirect to a signin or signup page
-  if (noReturnUrls.indexOf(req.session.redirect_to) === -1) {
-    info.redirect_to = req.session.redirect_to;
-  }
 
   // Define a search query fields
   var searchMainProviderIdentifierField = 'providerData.' + providerUserProfile.providerIdentifierField;
@@ -156,101 +87,32 @@ exports.saveOAuthUserProfile = function (req, providerUserProfile, done) {
       return done(err);
     }
 
-    if (!req.user) {
-      if (!existingUser) {
-        var possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
+    if (!existingUser) {
+      var possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
 
-        User.findUniqueUsername(possibleUsername, null, function (availableUsername) {
-          user = new User({
-            firstName: providerUserProfile.firstName,
-            lastName: providerUserProfile.lastName,
-            username: availableUsername,
-            displayName: providerUserProfile.displayName,
-            profileImageURL: providerUserProfile.profileImageURL,
-            provider: providerUserProfile.provider,
-            providerData: providerUserProfile.providerData
-          });
-
-          // Email intentionally added later to allow defaults (sparse settings) to be applid.
-          // Handles case where no email is supplied.
-          // See comment: https://github.com/meanjs/mean/pull/1495#issuecomment-246090193
-          user.email = providerUserProfile.email;
-
-          // And save the user
-          user.save(function (err) {
-            return done(err, user, info);
-          });
+      User.findUniqueUsername(possibleUsername, null, function (availableUsername) {
+        user = new User({
+          firstName: providerUserProfile.firstName,
+          lastName: providerUserProfile.lastName,
+          username: availableUsername,
+          displayName: providerUserProfile.displayName,
+          profileImageURL: providerUserProfile.profileImageURL,
+          provider: providerUserProfile.provider,
+          providerData: providerUserProfile.providerData
         });
-      } else {
-        return done(err, existingUser, info);
-      }
-    } else {
-      // User is already logged in, join the provider data to the existing user
-      user = req.user;
 
-      // Check if an existing user was found for this provider account
-      if (existingUser) {
-        if (user.id !== existingUser.id) {
-          return done(new Error('Account is already connected to another user'), user, info);
-        }
+        // Email intentionally added later to allow defaults (sparse settings) to be applid.
+        // Handles case where no email is supplied.
+        // See comment: https://github.com/meanjs/mean/pull/1495#issuecomment-246090193
+        user.email = providerUserProfile.email;
 
-        return done(new Error('User is already connected using this provider'), user, info);
-      }
-
-      // Add the provider data to the additional provider data field
-      if (!user.additionalProvidersData) {
-        user.additionalProvidersData = {};
-      }
-
-      user.additionalProvidersData[providerUserProfile.provider] = providerUserProfile.providerData;
-
-      // Then tell mongoose that we've updated the additionalProvidersData field
-      user.markModified('additionalProvidersData');
-
-      // And save the user
-      user.save(function (err) {
-        return done(err, user, info);
-      });
-    }
-  });
-};
-
-/**
- * Remove OAuth provider
- */
-exports.removeOAuthProvider = function (req, res, next) {
-  var user = req.user;
-  var provider = req.query.provider;
-
-  if (!user) {
-    return res.status(401).json({
-      message: 'User is not authenticated'
-    });
-  } else if (!provider) {
-    return res.status(400).send();
-  }
-
-  // Delete the additional provider
-  if (user.additionalProvidersData[provider]) {
-    delete user.additionalProvidersData[provider];
-
-    // Then tell mongoose that we've updated the additionalProvidersData field
-    user.markModified('additionalProvidersData');
-  }
-
-  user.save(function (err) {
-    if (err) {
-      return res.status(422).send({
-        message: errorHandler.getErrorMessage(err)
+        // And save the user
+        user.save(function (err) {
+          return done(err, user, info);
+        });
       });
     } else {
-      req.login(user, function (err) {
-        if (err) {
-          return res.status(400).send(err);
-        } else {
-          return res.json(user);
-        }
-      });
+      return done(err, existingUser, info);
     }
   });
 };
