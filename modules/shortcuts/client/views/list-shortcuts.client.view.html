@@ -1,0 +1,18 @@
+<section>
+  <div class="page-header">
+    <h1>Shortcuts</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="shortcut in vm.shortcuts" ui-sref="shortcuts.view({ shortcutId: shortcut._id })" class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="shortcut.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="shortcut.user" ng-bind="shortcut.user.displayName"></span>
+        <span ng-if="!shortcut.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="shortcut.title"></h4>
+      <p class="list-group-item-text" ng-bind="shortcut.content"></p>
+    </a>
+  </div>
+</section>
