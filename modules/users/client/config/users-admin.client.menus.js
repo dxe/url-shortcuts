@@ -13,5 +13,10 @@
       title: 'Manage Users',
       state: 'admin.users'
     });
+
+    menuService.addSubMenuItem('topbar', 'admin', {
+      title: 'Manage Allowed Logins',
+      state: 'admin.allowed-logins'
+    });
   }
 }());

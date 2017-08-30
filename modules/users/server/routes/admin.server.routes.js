@@ -20,6 +20,18 @@ module.exports = function (app) {
     .put(adminPolicy.isAllowed, admin.update)
     .delete(adminPolicy.isAllowed, admin.delete);
 
+  // Allowed Login routes
+
+  app.route('/api/logins')
+    .get(adminPolicy.isAllowed, admin.listLogins)
+    .post(adminPolicy.isAllowed, admin.addLogin);
+
+  app.route('/api/logins/:loginId')
+    .get(adminPolicy.isAllowed, admin.readLogin)
+    .put(adminPolicy.isAllowed, admin.updateLogin)
+    .delete(adminPolicy.isAllowed, admin.deleteLogin);
+
   // Finish by binding the user middleware
   app.param('userId', admin.userByID);
+  app.param('loginId', admin.loginByID);
 };

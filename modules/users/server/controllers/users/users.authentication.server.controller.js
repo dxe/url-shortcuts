@@ -7,7 +7,10 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   mongoose = require('mongoose'),
   passport = require('passport'),
-  User = mongoose.model('User');
+  User = mongoose.model('User'),
+  AllowedLogin = mongoose.model('AllowedLogin');
+
+var allowedLoginProviders = ['google'];
 
 /**
  * Signout
@@ -81,38 +84,64 @@ exports.saveOAuthUserProfile = function (req, providerUserProfile, done) {
     $or: [mainProviderSearchQuery, additionalProviderSearchQuery]
   };
 
-  // Find existing user with this provider account
-  User.findOne(searchQuery, function (err, existingUser) {
-    if (err) {
-      return done(err);
-    }
+  // Ensure we're only authenticating Google logins (for now), and that we have an email
+  if (allowedLoginProviders.indexOf(providerUserProfile.provider) === -1 || !providerUserProfile.email) {
+    return done(new Error('Invalid Google account!'));
+  }
 
-    if (!existingUser) {
-      var possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
+  // Make sure this provider login is allowed
+  AllowedLogin
+    .findOne({
+      email: providerUserProfile.email,
+      provider: providerUserProfile.provider,
+      isDisabled: false
+    }, function (err, allowedLogin) {
 
-      User.findUniqueUsername(possibleUsername, null, function (availableUsername) {
-        user = new User({
-          firstName: providerUserProfile.firstName,
-          lastName: providerUserProfile.lastName,
-          username: availableUsername,
-          displayName: providerUserProfile.displayName,
-          profileImageURL: providerUserProfile.profileImageURL,
-          provider: providerUserProfile.provider,
-          providerData: providerUserProfile.providerData
-        });
+      if (err) {
+        return done(err);
+      }
 
-        // Email intentionally added later to allow defaults (sparse settings) to be applid.
-        // Handles case where no email is supplied.
-        // See comment: https://github.com/meanjs/mean/pull/1495#issuecomment-246090193
-        user.email = providerUserProfile.email;
+      if (!allowedLogin) {
+        return done(new Error('Invalid Google account!'));
+      }
 
-        // And save the user
-        user.save(function (err) {
-          return done(err, user, info);
-        });
+      // Find existing user with this provider account
+      User.findOne(searchQuery, function (err, existingUser) {
+        if (err) {
+          return done(err);
+        }
+
+        if (!existingUser) {
+          var possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
+
+          User.findUniqueUsername(possibleUsername, null, function (availableUsername) {
+            user = new User({
+              firstName: providerUserProfile.firstName,
+              lastName: providerUserProfile.lastName,
+              username: availableUsername,
+              displayName: providerUserProfile.displayName,
+              profileImageURL: providerUserProfile.profileImageURL,
+              provider: providerUserProfile.provider,
+              providerData: providerUserProfile.providerData
+            });
+
+            // Email intentionally added later to allow defaults (sparse settings) to be applid.
+            // Handles case where no email is supplied.
+            // See comment: https://github.com/meanjs/mean/pull/1495#issuecomment-246090193
+            user.email = providerUserProfile.email;
+
+            if (allowedLogin.isAdmin) {
+              user.roles.push('admin');
+            }
+
+            // And save the user
+            user.save(function (err) {
+              return done(err, user, info);
+            });
+          });
+        } else {
+          return done(err, existingUser, info);
+        }
       });
-    } else {
-      return done(err, existingUser, info);
-    }
-  });
+    });
 };

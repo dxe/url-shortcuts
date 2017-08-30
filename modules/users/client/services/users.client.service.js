@@ -34,4 +34,18 @@
       }
     });
   }
+
+  angular
+    .module('users.admin.services')
+    .factory('AllowedLoginService', AllowedLoginService);
+
+  function AllowedLoginService($resource) {
+    return $resource('/api/logins/:allowedLoginId', {
+      allowedLoginId: '@_id'
+    }, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }
 }());
