@@ -46,7 +46,7 @@ exports.read = function (req, res) {
 exports.update = function (req, res) {
   var shortcut = req.shortcut;
 
-  shortcut.url = req.body.url;
+  shortcut.code = req.body.code;
   shortcut.target = req.body.target;
 
   shortcut.save(function (err) {

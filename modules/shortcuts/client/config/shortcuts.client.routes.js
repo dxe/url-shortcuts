@@ -20,6 +20,18 @@
         controller: 'ShortcutsListController',
         controllerAs: 'vm'
       })
+      .state('shortcuts.create', {
+        url: '/create',
+        templateUrl: '/modules/shortcuts/client/views/form-shortcut.client.view.html',
+        controller: 'ShortcutsController',
+        controllerAs: 'vm',
+        data: {
+          roles: ['admin', 'user']
+        },
+        resolve: {
+          shortcutResolve: newShortcut
+        }
+      })
       .state('shortcuts.view', {
         url: '/:shortcutId',
         templateUrl: '/modules/shortcuts/client/views/view-shortcut.client.view.html',
@@ -31,6 +43,19 @@
         data: {
           pageTitle: '{{ shortcutResolve.title }}'
         }
+      })
+      .state('shortcuts.edit', {
+        url: '/:shortcutId/edit',
+        templateUrl: '/modules/shortcuts/client/views/form-shortcut.client.view.html',
+        controller: 'ShortcutsController',
+        controllerAs: 'vm',
+        data: {
+          roles: ['admin', 'user'],
+          pageTitle: '{{ shortcutResolve.title }}'
+        },
+        resolve: {
+          shortcutResolve: getShortcut
+        }
       });
   }
 
@@ -40,5 +65,11 @@
     return ShortcutsService.get({
       shortcutId: $stateParams.shortcutId
     }).$promise;
+  }
+
+  newShortcut.$inject = ['ShortcutsService'];
+
+  function newShortcut(ShortcutsService) {
+    return new ShortcutsService();
   }
 }());

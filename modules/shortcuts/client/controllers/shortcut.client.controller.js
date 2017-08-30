@@ -2,25 +2,32 @@
   'use strict';
 
   angular
-    .module('shortcuts.admin')
-    .controller('ShortcutsAdminController', ShortcutsAdminController);
+    .module('shortcuts')
+    .controller('ShortcutsController', ShortcutsController);
 
-  ShortcutsAdminController.$inject = ['$scope', '$state', '$window', 'shortcutResolve', 'Authentication', 'Notification'];
+  ShortcutsController.$inject = ['$scope', 'shortcutResolve', 'Authentication', '$window', '$state', 'Notification'];
 
-  function ShortcutsAdminController($scope, $state, $window, shortcut, Authentication, Notification) {
+  function ShortcutsController($scope, shortcut, Authentication, $window, $state, Notification) {
     var vm = this;
 
     vm.shortcut = shortcut;
     vm.authentication = Authentication;
-    vm.form = {};
     vm.remove = remove;
     vm.save = save;
 
+    vm.user = vm.authentication.user;
+    vm.isCurrentUserAdmin = vm.user && vm.user.roles && vm.user.roles.indexOf('admin') !== -1;
+    vm.canEdit = vm.user && (vm.shortcut.isCurrentUserOwner || vm.isCurrentUserAdmin);
+
     // Remove existing Shortcut
     function remove() {
+      if (!vm.canEdit) {
+        return;
+      }
+
       if ($window.confirm('Are you sure you want to delete?')) {
         vm.shortcut.$remove(function () {
-          $state.go('admin.shortcuts.list');
+          $state.go('shortcuts.list');
           Notification.success({ message: '<i class="glyphicon glyphicon-ok"></i> Shortcut deleted successfully!' });
         });
       }
@@ -28,6 +35,10 @@
 
     // Save Shortcut
     function save(isValid) {
+      if (!vm.user || (!vm.canEdit && vm.shortcut._id)) {
+        return;
+      }
+
       if (!isValid) {
         $scope.$broadcast('show-errors-check-validity', 'vm.form.shortcutForm');
         return false;
@@ -39,7 +50,7 @@
         .catch(errorCallback);
 
       function successCallback(res) {
-        $state.go('admin.shortcuts.list'); // should we send the User to the list or the updated Shortcut's view?
+        $state.go('shortcuts.view', { shortcutId: vm.shortcut._id }); // should we send the User to the list or the updated Shortcut's view?
         Notification.success({ message: '<i class="glyphicon glyphicon-ok"></i> Shortcut saved successfully!' });
       }
 

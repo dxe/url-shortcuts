@@ -17,7 +17,7 @@ var ShortcutSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  url: {
+  code: {
     type: String,
     default: '',
     trim: true,

@@ -1,6 +1,13 @@
 <section>
   <div class="page-header">
     <h1>Shortcuts</h1>
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <a class="btn btn-primary pull-right" ng-if="vm.user" data-ui-sref="shortcuts.create">
+          <i class="glyphicon glyphicon-plus"></i>
+        </a>
+      </div>
+    </div>
   </div>
   <div class="list-group">
     <a ng-repeat="shortcut in vm.shortcuts" ui-sref="shortcuts.view({ shortcutId: shortcut._id })" class="list-group-item">
@@ -11,8 +18,8 @@
         <span ng-if="shortcut.user" ng-bind="shortcut.user.displayName"></span>
         <span ng-if="!shortcut.user">Deleted User</span>
       </small>
-      <h4 class="list-group-item-heading" ng-bind="shortcut.title"></h4>
-      <p class="list-group-item-text" ng-bind="shortcut.content"></p>
+      <h3 class="list-group-item-heading" ng-bind="shortcut.code"></h3>
+      <h4 class="list-group-item-heading" ng-bind="shortcut.target"></h4>
     </a>
   </div>
 </section>

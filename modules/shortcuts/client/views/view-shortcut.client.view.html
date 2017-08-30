@@ -1,6 +1,19 @@
 <section>
   <div class="page-header">
-    <h1 ng-bind="vm.shortcut.title"></h1>
+    <div class="row">
+      <div class="col-md-6">
+        <h3 ng-bind="vm.shortcut.code"></h3>
+        <h4 ng-bind="vm.shortcut.target"></h4>
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-primary" ng-if="vm.canEdit" ui-sref="shortcuts.edit({shortcutId: vm.shortcut._id})">
+          <i class="glyphicon glyphicon-edit"></i>
+        </a>
+        <a class="btn btn-primary" ng-click="vm.remove()" ng-if="vm.canEdit">
+          <i class="glyphicon glyphicon-trash"></i>
+        </a>
+      </div>
+    </div>
   </div>
   <small>
     <em class="text-muted">
@@ -11,5 +24,4 @@
       <span ng-if="!vm.shortcut.user">Deleted User</span>
     </em>
   </small>
-  <p class="lead" ng-bind="vm.shortcut.content"></p>
 </section>
