@@ -18,6 +18,11 @@ module.exports = function (app) {
     .put(shortcuts.update)
     .delete(shortcuts.delete);
 
+  // Shortcut redirect route
+  app.route('/:shortcutCode')
+    .get(shortcuts.redirect);
+
   // Finish by binding the shortcut middleware
   app.param('shortcutId', shortcuts.shortcutByID);
+  app.param('shortcutCode', shortcuts.shortcutByCode);
 };

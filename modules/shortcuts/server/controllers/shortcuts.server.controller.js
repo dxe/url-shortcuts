@@ -6,7 +6,21 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Shortcut = mongoose.model('Shortcut'),
-  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
+  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
+  url = require('url');
+
+var restrictedShortcutCodes = ['api', 'modules', 'lib', 'server-error', '*'];
+
+exports.shortcutByCode = shortcutByCode;
+exports.redirect = redirectShortcut;
+
+// Helper function for formatting Shortcut Target URL
+function formatShortcutTarget(target) {
+  var targetUrl = url.parse(target);
+  targetUrl.slashes = true;
+
+  return url.format(targetUrl);
+}
 
 /**
  * Create an shortcut
@@ -14,6 +28,14 @@ var path = require('path'),
 exports.create = function (req, res) {
   var shortcut = new Shortcut(req.body);
   shortcut.user = req.user;
+
+  shortcut.target = formatShortcutTarget(shortcut.target);
+
+  if (restrictedShortcutCodes.indexOf(shortcut.code) !== -1) {
+    return res.status(422).send({
+      message: 'You cannot use restricted keywords as Shortcut code: ' + restrictedShortcutCodes.join(', ')
+    });
+  }
 
   shortcut.save(function (err) {
     if (err) {
@@ -47,7 +69,7 @@ exports.update = function (req, res) {
   var shortcut = req.shortcut;
 
   shortcut.code = req.body.code;
-  shortcut.target = req.body.target;
+  shortcut.target = formatShortcutTarget(req.body.target);
 
   shortcut.save(function (err) {
     if (err) {
@@ -121,3 +143,31 @@ exports.shortcutByID = function (req, res, next, id) {
       next();
     });
 };
+
+function redirectShortcut(req, res, next) {
+  if (!req.shortcut) {
+    return next();
+  }
+
+  res.redirect(req.shortcut.target);
+}
+
+function shortcutByCode(req, res, next, code) {
+  if (restrictedShortcutCodes.indexOf(code) !== -1) {
+    // This is probably an edge case, but it's an easy way to handle it.
+    return next();
+  }
+
+  Shortcut
+    .findOne({
+      code: code
+    })
+    .exec()
+    .then(function (shortcut) {
+      req.shortcut = shortcut;
+      return next();
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
