@@ -34,7 +34,8 @@
     "generate-ssl-certs": "scripts/generate-ssl-certs.sh",
     "seed": "gulp seed",
     "seed:prod": "gulp seed:prod",
-    "seed:test": "gulp seed:test"
+    "seed:test": "gulp seed:test",
+    "heroku-postbuild": "gulp heroku-postbuild"
   },
   "dependencies": {
     "acl": "~0.4.10",

@@ -498,3 +498,7 @@ gulp.task('seed:prod', function (done) {
 gulp.task('seed:test', function (done) {
   runSequence('env:test', 'mongo-seed', done);
 });
+
+gulp.task('heroku-postbuild', function (done) {
+  runSequence(['copyLocalEnvConfig', 'makeUploadsDir', 'templatecache'], ['build', 'seed:prod'], done);
+});

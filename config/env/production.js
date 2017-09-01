@@ -94,14 +94,11 @@ module.exports = {
       logResults: process.env.MONGO_SEED_LOG_RESULTS !== 'false'
     },
     collections: [{
-      model: 'User',
+      model: 'AllowedLogin',
       docs: [{
         data: {
-          username: 'local-admin',
-          email: 'admin@localhost.com',
-          firstName: 'Admin',
-          lastName: 'Local',
-          roles: ['admin', 'user']
+          email: process.env.MONGO_SEED_ALLOWED_LOGIN_EMAIL,
+          isAdmin: true
         }
       }]
     }]

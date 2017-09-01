@@ -76,45 +76,11 @@ module.exports = {
     // i.e. given these settings, the User seeds will be complete before
     // Article seed is performed.
     collections: [{
-      model: 'User',
+      model: 'AllowedLogin',
       docs: [{
         data: {
-          username: 'local-admin',
-          email: 'admin@localhost.com',
-          firstName: 'Admin',
-          lastName: 'Local',
-          roles: ['admin', 'user']
-        }
-      }, {
-        // Set to true to overwrite this document
-        // when it already exists in the collection.
-        // If set to false, or missing, the seed operation
-        // will skip this document to avoid overwriting it.
-        overwrite: true,
-        data: {
-          username: 'local-user',
-          email: 'user@localhost.com',
-          firstName: 'User',
-          lastName: 'Local',
-          roles: ['user']
-        }
-      }]
-    }, {
-      model: 'Article',
-      options: {
-        // Override log results setting at the
-        // collection level.
-        logResults: true
-      },
-      skip: {
-        // Skip collection when this query returns results.
-        // e.g. {}: Only seeds collection when it is empty.
-        when: {} // Mongoose qualified query
-      },
-      docs: [{
-        data: {
-          title: 'First Article',
-          content: 'This is a seeded Article for the development environment'
+          email: process.env.MONGO_SEED_ALLOWED_LOGIN_EMAIL,
+          isAdmin: true
         }
       }]
     }]
