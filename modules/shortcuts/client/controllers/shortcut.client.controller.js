@@ -5,9 +5,9 @@
     .module('shortcuts')
     .controller('ShortcutsController', ShortcutsController);
 
-  ShortcutsController.$inject = ['$scope', 'shortcutResolve', 'Authentication', '$window', '$state', 'Notification'];
+  ShortcutsController.$inject = ['$scope', 'shortcutResolve', 'Authentication', '$window', '$state', 'Notification', '$location'];
 
-  function ShortcutsController($scope, shortcut, Authentication, $window, $state, Notification) {
+  function ShortcutsController($scope, shortcut, Authentication, $window, $state, Notification, $location) {
     var vm = this;
 
     vm.shortcut = shortcut;
@@ -18,6 +18,18 @@
     vm.user = vm.authentication.user;
     vm.isCurrentUserAdmin = vm.user && vm.user.roles && vm.user.roles.indexOf('admin') !== -1;
     vm.canEdit = vm.user && (vm.shortcut.isCurrentUserOwner || vm.isCurrentUserAdmin);
+
+    vm.getShortcutLink = getShortcutLink;
+
+    function getShortcutLink(shortcut) {
+      shortcut = shortcut || vm.shortcut;
+
+      if (!shortcut || !shortcut.code) {
+        return;
+      }
+
+      return $location.protocol() + '://' + $location.host() + '/' + shortcut.code;
+    }
 
     // Remove existing Shortcut
     function remove() {
