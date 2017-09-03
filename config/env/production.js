@@ -100,6 +100,11 @@ module.exports = {
           email: process.env.MONGO_SEED_ALLOWED_LOGIN_EMAIL,
           isAdmin: true
         }
+      }, {
+        data: {
+          email: process.env.MONGO_SEED_ALLOWED_LOGIN_EMAIL_1,
+          isAdmin: true
+        }
       }]
     }]
   }
