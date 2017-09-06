@@ -4,10 +4,14 @@ var validator = require('validator'),
   path = require('path'),
   config = require(path.resolve('./config/config'));
 
+exports.redirectFromIndex = function (req, res) {
+  res.redirect(301, config.indexRedirectUrl);
+}
+
 /**
  * Render the main application page
  */
-exports.renderIndex = function (req, res) {
+exports.renderShortcutsIndex = function (req, res) {
   var safeUserObject = null;
   if (req.user) {
     safeUserObject = {

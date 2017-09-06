@@ -27,14 +27,8 @@
     });
 
     $stateProvider
-      .state('home', {
-        url: '/',
-        templateUrl: '/modules/core/client/views/home.client.view.html',
-        controller: 'HomeController',
-        controllerAs: 'vm'
-      })
       .state('not-found', {
-        url: '/not-found',
+        url: '/shortcuts/not-found',
         templateUrl: '/modules/core/client/views/404.client.view.html',
         controller: 'ErrorController',
         controllerAs: 'vm',
@@ -48,7 +42,7 @@
         }
       })
       .state('bad-request', {
-        url: '/bad-request',
+        url: '/shortcuts/bad-request',
         templateUrl: '/modules/core/client/views/400.client.view.html',
         controller: 'ErrorController',
         controllerAs: 'vm',
@@ -62,7 +56,7 @@
         }
       })
       .state('forbidden', {
-        url: '/forbidden',
+        url: '/shortcuts/forbidden',
         templateUrl: '/modules/core/client/views/403.client.view.html',
         data: {
           ignoreState: true

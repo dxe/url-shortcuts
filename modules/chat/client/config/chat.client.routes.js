@@ -10,7 +10,7 @@
   function routeConfig($stateProvider) {
     $stateProvider
       .state('chat', {
-        url: '/chat',
+        url: '/shortcuts/chat',
         templateUrl: '/modules/chat/client/views/chat.client.view.html',
         controller: 'ChatController',
         controllerAs: 'vm',

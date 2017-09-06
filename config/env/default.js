@@ -7,6 +7,7 @@ module.exports = {
     keywords: 'DxE, Direct Action Everywhere, URL, tools, activism, animal liberation, love',
     googleAnalyticsTrackingID: process.env.GOOGLE_ANALYTICS_TRACKING_ID || 'GOOGLE_ANALYTICS_TRACKING_ID'
   },
+  indexRedirectUrl: 'https://www.directactioneverywhere.com',
   db: {
     promise: global.Promise
   },

@@ -11,7 +11,7 @@
     $stateProvider
       .state('admin', {
         abstract: true,
-        url: '/admin',
+        url: '/shortcuts/admin',
         template: '<ui-view/>',
         data: {
           roles: ['admin']

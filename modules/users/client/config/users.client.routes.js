@@ -13,7 +13,7 @@
     $stateProvider
       .state('settings', {
         abstract: true,
-        url: '/settings',
+        url: '/shortcuts/settings',
         templateUrl: '/modules/users/client/views/settings/settings.client.view.html',
         controller: 'SettingsController',
         controllerAs: 'vm',
@@ -40,7 +40,7 @@
         }
       })
       .state('signin', {
-        url: '/signin',
+        url: '/shortcuts/signin',
         templateUrl: '/modules/users/client/views/authentication/authentication.client.view.html',
         controller: 'AuthenticationController',
         controllerAs: 'vm'
