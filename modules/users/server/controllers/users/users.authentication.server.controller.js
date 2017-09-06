@@ -17,7 +17,7 @@ var allowedLoginProviders = ['google'];
  */
 exports.signout = function (req, res) {
   req.logout();
-  res.redirect('/');
+  res.redirect('/shortcuts');
 };
 
 /**
@@ -52,7 +52,7 @@ exports.oauthCallback = function (strategy) {
           return res.redirect('/signin');
         }
 
-        return res.redirect(info.redirect_to || '/');
+        return res.redirect(info.redirect_to || '/shortcuts');
       });
     })(req, res, next);
   };

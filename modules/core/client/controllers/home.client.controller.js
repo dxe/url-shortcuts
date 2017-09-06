@@ -5,7 +5,10 @@
     .module('core')
     .controller('HomeController', HomeController);
 
-  function HomeController() {
+  HomeController.$inject = ['$window'];
+
+  function HomeController($window) {
     var vm = this;
+    $window.location.href = 'https://www.directactioneverywhere.com';
   }
 }());

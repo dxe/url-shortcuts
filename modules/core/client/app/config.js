@@ -1,7 +1,7 @@
 (function (window) {
   'use strict';
 
-  var applicationModuleName = 'dxe-short-urls';
+  var applicationModuleName = 'dxe-shortcuts';
 
   var service = {
     applicationEnvironment: window.env,
