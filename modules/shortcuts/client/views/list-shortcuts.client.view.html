@@ -8,9 +8,14 @@
         </a>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-4" style="margin-top: 2em">
+        <input class="form-control col-md-4" type="text" ng-model="vm.search" placeholder="Search" ng-change="vm.figureOutItemsToDisplay()" />
+      </div>
+    </div>
   </div>
   <div class="list-group">
-    <a ng-repeat="shortcut in vm.shortcuts" ui-sref="shortcuts.view({ shortcutId: shortcut._id })" class="list-group-item">
+    <a ng-repeat="shortcut in vm.pagedItems" ui-sref="shortcuts.view({ shortcutId: shortcut._id })" class="list-group-item">
       <small class="list-group-item-text">
         Posted on
         <span ng-bind="shortcut.created | date:'mediumDate'"></span>
@@ -22,4 +27,6 @@
       <h4 class="list-group-item-heading" ng-bind="shortcut.target"></h4>
     </a>
   </div>
+
+  <uib-pagination boundary-links="true" max-size="8" items-per-page="vm.itemsPerPage" total-items="vm.filterLength" ng-model="vm.currentPage" ng-change="vm.pageChanged()"></uib-pagination>
 </section>
