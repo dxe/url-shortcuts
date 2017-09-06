@@ -6,7 +6,7 @@ var validator = require('validator'),
 
 exports.redirectFromIndex = function (req, res) {
   res.redirect(301, config.indexRedirectUrl);
-}
+};
 
 /**
  * Render the main application page

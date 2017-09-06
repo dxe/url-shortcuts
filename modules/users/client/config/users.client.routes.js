@@ -39,11 +39,15 @@
           pageTitle: 'Settings picture'
         }
       })
-      .state('signin', {
-        url: '/shortcuts/signin',
+      .state('auth', {
+        url: '/shortcuts/auth',
+        abstract: true,
         templateUrl: '/modules/users/client/views/authentication/authentication.client.view.html',
         controller: 'AuthenticationController',
         controllerAs: 'vm'
+      })
+      .state('auth.signin', {
+        url: '/signin'
       });
   }
 }());
