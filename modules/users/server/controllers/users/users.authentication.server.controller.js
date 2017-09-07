@@ -42,8 +42,9 @@ exports.oauthCallback = function (strategy) {
     // info.redirect_to contains inteded redirect path
     passport.authenticate(strategy, function (err, user, info) {
       if (err) {
-        console.log('Error in OAuth Callback: ', err);
-        return res.redirect('/shortcuts/auth/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
+        console.log("OAUTH ERROR");
+        console.log(err);
+        return res.redirect('/shortcuts/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
       }
       if (!user) {
         return res.redirect('/shortcuts/auth/signin');
