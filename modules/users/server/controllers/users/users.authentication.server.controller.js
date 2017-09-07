@@ -42,14 +42,15 @@ exports.oauthCallback = function (strategy) {
     // info.redirect_to contains inteded redirect path
     passport.authenticate(strategy, function (err, user, info) {
       if (err) {
-        return res.redirect('/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
+        console.log('Error in OAuth Callback: ', err);
+        return res.redirect('/shortcuts/auth/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
       }
       if (!user) {
-        return res.redirect('/signin');
+        return res.redirect('/shortcuts/auth/signin');
       }
       req.login(user, function (err) {
         if (err) {
-          return res.redirect('/signin');
+          return res.redirect('/shortcuts/auth/signin');
         }
 
         return res.redirect(info.redirect_to || '/shortcuts');
