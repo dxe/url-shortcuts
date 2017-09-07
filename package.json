@@ -74,12 +74,7 @@
     "socket.io": "^2.0.2",
     "validator": "~8.0.0",
     "winston": "^2.3.1",
-    "wiredep": "~4.0.0"
-  },
-  "devDependencies": {
-    "coveralls": "~2.13.0",
-    "del": "^3.0.0",
-    "eslint-config-airbnb": "~6.0.2",
+    "wiredep": "~4.0.0",
     "gulp": "~3.9.1",
     "gulp-angular-templatecache": "~2.0.0",
     "gulp-autoprefixer": "~4.0.0",
@@ -101,15 +96,20 @@
     "gulp-sass": "~3.1.0",
     "gulp-uglify": "~3.0.0",
     "imagemin-pngquant": "~5.0.0",
+    "run-sequence": "~2.1.0",
+    "semver": "~5.4.1",
+    "should": "~11.2.1",
+    "del": "^3.0.0"
+  },
+  "devDependencies": {
+    "coveralls": "~2.13.0",
+    "eslint-config-airbnb": "~6.0.2",
     "karma": "~1.7.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage": "~1.1.1",
     "karma-jasmine": "~1.1.0",
     "karma-mocha-reporter": "~2.2.3",
     "karma-ng-html2js-preprocessor": "~1.0.0",
-    "run-sequence": "~2.1.0",
-    "semver": "~5.4.1",
-    "should": "~11.2.1",
     "supertest": "~3.0.0"
   }
 }
