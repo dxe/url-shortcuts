@@ -99,9 +99,7 @@
     "run-sequence": "~2.1.0",
     "semver": "~5.4.1",
     "should": "~11.2.1",
-    "del": "^3.0.0"
-  },
-  "devDependencies": {
+    "del": "^3.0.0",
     "coveralls": "~2.13.0",
     "eslint-config-airbnb": "~6.0.2",
     "karma": "~1.7.0",
@@ -111,5 +109,7 @@
     "karma-mocha-reporter": "~2.2.3",
     "karma-ng-html2js-preprocessor": "~1.0.0",
     "supertest": "~3.0.0"
+  },
+  "devDependencies": {
   }
 }
