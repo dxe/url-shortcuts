@@ -44,7 +44,7 @@ exports.oauthCallback = function (strategy) {
       if (err) {
         console.log("OAUTH ERROR");
         console.log(err);
-        return res.redirect('/shortcuts/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
+        return res.redirect('/shortcuts/auth/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
       }
       if (!user) {
         return res.redirect('/shortcuts/auth/signin');
