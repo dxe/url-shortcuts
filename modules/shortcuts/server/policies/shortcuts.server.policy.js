@@ -30,15 +30,6 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/shortcuts/:shortcutId',
       permissions: []
     }]
-  }, {
-    roles: ['guest'],
-    allows: [{
-      resources: '/api/shortcuts',
-      permissions: ['get']
-    }, {
-      resources: '/api/shortcuts/:shortcutId',
-      permissions: ['get']
-    }]
   }]);
 };
 

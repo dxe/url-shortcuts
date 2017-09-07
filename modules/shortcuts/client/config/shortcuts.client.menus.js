@@ -12,14 +12,13 @@
       title: 'Shortcuts',
       state: 'shortcuts',
       type: 'dropdown',
-      roles: ['*']
+      roles: ['user', 'admin']
     });
 
     // Add the dropdown list item
     menuService.addSubMenuItem('topbar', 'shortcuts', {
       title: 'List Shortcuts',
-      state: 'shortcuts.list',
-      roles: ['*']
+      state: 'shortcuts.list'
     });
   }
 }());

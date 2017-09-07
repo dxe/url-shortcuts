@@ -12,7 +12,10 @@
       .state('shortcuts', {
         abstract: true,
         url: '/shortcuts',
-        template: '<ui-view/>'
+        template: '<ui-view/>',
+        data: {
+          roles: ['user', 'admin']
+        }
       })
       .state('shortcuts.list', {
         url: '',
