@@ -10,15 +10,9 @@
   function menuConfig(menuService) {
     menuService.addMenuItem('topbar', {
       title: 'Shortcuts',
-      state: 'shortcuts',
-      type: 'dropdown',
+      state: 'shortcuts.list',
       roles: ['user', 'admin']
     });
 
-    // Add the dropdown list item
-    menuService.addSubMenuItem('topbar', 'shortcuts', {
-      title: 'List Shortcuts',
-      state: 'shortcuts.list'
-    });
   }
 }());
