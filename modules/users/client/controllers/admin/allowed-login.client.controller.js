@@ -13,7 +13,7 @@
     vm.authentication = Authentication;
     vm.login = login;
     vm.remove = remove;
-    vm.update = update;
+    vm.save = save;
 
     function remove(login) {
       if ($window.confirm('Are you sure you want to delete this login?')) {
@@ -24,30 +24,33 @@
           Notification.success('Allowed Login deleted successfully!');
         } else {
           vm.login.$remove(function () {
-            $state.go('admin.allowed-logins');
+            $state.go('admin.allowed-logins.list');
             Notification.success({ message: '<i class="glyphicon glyphicon-ok"></i> Allowed Login deleted successfully!' });
           });
         }
       }
     }
 
-    function update(isValid) {
+    function save(isValid) {
       if (!isValid) {
         $scope.$broadcast('show-errors-check-validity', 'vm.allowedLoginForm');
 
         return false;
       }
 
-      var login = vm.login;
+      // Create a new shortcut, or update the current instance
+      vm.login.createOrUpdate()
+        .then(successCallback)
+        .catch(errorCallback);
 
-      login.$update(function () {
-        $state.go('admin.allowed-login', {
-          allowedLoginId: login._id
-        });
+      function successCallback(res) {
+        $state.go('admin.allowed-logins.list');
         Notification.success({ message: '<i class="glyphicon glyphicon-ok"></i> Allowed Login saved successfully!' });
-      }, function (errorResponse) {
-        Notification.error({ message: errorResponse.data.message, title: '<i class="glyphicon glyphicon-remove"></i> Allowed Login update error!' });
-      });
+      }
+
+      function errorCallback(res) {
+        Notification.error({ message: res.data.message, title: '<i class="glyphicon glyphicon-remove"></i> Allowed Login save error!' });
+      }
     }
   }
 }());

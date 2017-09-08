@@ -1,9 +1,9 @@
 <section>
   <div class="page-header">
-    <h1>Allowed Login <span ng-bind="vm.login.email"></span></h1>
+    <h1>{{vm.login._id ? vm.login.email : 'New Allowed Login'}}</h1>
   </div>
   <div class="col-md-12">
-    <form name="vm.allowedLoginForm" ng-submit="vm.update(vm.allowedLoginForm.$valid)" novalidate>
+    <form name="vm.allowedLoginForm" ng-submit="vm.save(vm.allowedLoginForm.$valid)" novalidate>
       <fieldset>
         <div class="form-group" show-errors>
           <label for="firstName">Email</label>

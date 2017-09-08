@@ -16,7 +16,7 @@
 
     menuService.addSubMenuItem('topbar', 'admin', {
       title: 'Manage Allowed Logins',
-      state: 'admin.allowed-logins'
+      state: 'admin.allowed-logins.list'
     });
   }
 }());

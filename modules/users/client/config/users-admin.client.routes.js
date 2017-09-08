@@ -41,13 +41,27 @@
         }
       })
       .state('admin.allowed-logins', {
+        abstract: true,
         url: '/allowed-logins',
+        template: '<ui-view />'
+      })
+      .state('admin.allowed-logins.list', {
+        url: '',
         templateUrl: '/modules/users/client/views/admin/list-allowed-logins.client.view.html',
         controller: 'AllowedLoginListController',
         controllerAs: 'vm'
       })
-      .state('admin.allowed-login', {
-        url: '/allowed-logins/:allowedLoginId',
+      .state('admin.allowed-logins.create', {
+        url: '/create',
+        templateUrl: '/modules/users/client/views/admin/edit-allowed-login.client.view.html',
+        controller: 'AllowedLoginController',
+        controllerAs: 'vm',
+        resolve: {
+          allowedLoginResolve: newAllowedLogin
+        }
+      })
+      .state('admin.allowed-logins.view', {
+        url: '/:allowedLoginId',
         templateUrl: '/modules/users/client/views/admin/view-allowed-login.client.view.html',
         controller: 'AllowedLoginController',
         controllerAs: 'vm',
@@ -58,8 +72,8 @@
           pageTitle: '{{ allowedLoginResolve.email }}'
         }
       })
-      .state('admin.allowed-login-edit', {
-        url: '/allowed-logins/:allowedLoginId/edit',
+      .state('admin.allowed-logins.edit', {
+        url: '/:allowedLoginId/edit',
         templateUrl: '/modules/users/client/views/admin/edit-allowed-login.client.view.html',
         controller: 'AllowedLoginController',
         controllerAs: 'vm',
@@ -79,12 +93,18 @@
       }).$promise;
     }
 
-    getAllowedLogin.$inject = ['$stateParams', 'AllowedLoginService'];
+    getAllowedLogin.$inject = ['$stateParams', 'AllowedLoginsService'];
 
-    function getAllowedLogin($stateParams, AllowedLoginService) {
-      return AllowedLoginService.get({
+    function getAllowedLogin($stateParams, AllowedLoginsService) {
+      return AllowedLoginsService.get({
         allowedLoginId: $stateParams.allowedLoginId
       }).$promise;
+    }
+
+    newAllowedLogin.$inject = ['AllowedLoginsService'];
+
+    function newAllowedLogin(AllowedLoginsService) {
+      return new AllowedLoginsService();
     }
   }
 }());

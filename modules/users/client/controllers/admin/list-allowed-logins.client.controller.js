@@ -5,15 +5,15 @@
     .module('users.admin')
     .controller('AllowedLoginListController', AllowedLoginListController);
 
-  AllowedLoginListController.$inject = ['$scope', '$filter', 'AllowedLoginService'];
+  AllowedLoginListController.$inject = ['$scope', '$filter', 'AllowedLoginsService'];
 
-  function AllowedLoginListController($scope, $filter, AllowedLoginService) {
+  function AllowedLoginListController($scope, $filter, AllowedLoginsService) {
     var vm = this;
     vm.buildPager = buildPager;
     vm.figureOutItemsToDisplay = figureOutItemsToDisplay;
     vm.pageChanged = pageChanged;
 
-    AllowedLoginService.query(function (logins) {
+    AllowedLoginsService.query(function (logins) {
       vm.logins = logins;
       vm.buildPager();
     });
