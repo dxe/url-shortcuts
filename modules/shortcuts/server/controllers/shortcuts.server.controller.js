@@ -159,12 +159,32 @@ function shortcutByCode(req, res, next, code) {
   }
 
   Shortcut
-    .findOne({
-      code: code
-    })
+    .aggregate([{
+      $project: {
+        code_lower: { $toLower: '$code' },
+        code: 1,
+        target: 1,
+        user: 1,
+        created: 1
+      }
+    }, {
+      $match: { code_lower: code.toString().toLowerCase() }
+    }])
     .exec()
-    .then(function (shortcut) {
-      req.shortcut = shortcut;
+    .then(function (shortcuts) {
+      if (!shortcuts || !shortcuts.length) {
+        return next();
+      }
+
+      // TODO: If a shortcut is not found, or we find "too many", should we
+      // just redirect them to dxe.io rather than show an error page?
+      // We probably want to keep dxe.io/shortcuts hidden from public users.
+
+      if (shortcuts.length !== 1) {
+        return next(new Error('Found too many shortcuts for code: ', code));
+      }
+
+      req.shortcut = shortcuts[0];
       return next();
     })
     .catch(function (err) {
