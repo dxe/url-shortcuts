@@ -17,7 +17,7 @@
 
     vm.user = vm.authentication.user;
     vm.isCurrentUserAdmin = vm.user && vm.user.roles && vm.user.roles.indexOf('admin') !== -1;
-    vm.canEdit = vm.user && (vm.shortcut.isCurrentUserOwner || vm.isCurrentUserAdmin);
+    vm.canEdit = !!vm.user;
 
     vm.getShortcutLink = getShortcutLink;
 
