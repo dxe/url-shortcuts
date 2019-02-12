@@ -28,7 +28,7 @@ exports.invokeRolesPolicies = function () {
       permissions: ['get', 'post']
     }, {
       resources: '/api/shortcuts/:shortcutId',
-      permissions: []
+      permissions: ['*']
     }]
   }]);
 };
