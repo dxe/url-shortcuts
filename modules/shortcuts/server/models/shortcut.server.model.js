@@ -20,6 +20,7 @@ var ShortcutSchema = new Schema({
   code: {
     type: String,
     default: '',
+    lowercase: true,
     trim: true,
     required: 'URL cannot be blank',
     unique: 'Shortcut Code already exists'
