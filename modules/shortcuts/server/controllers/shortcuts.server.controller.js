@@ -146,7 +146,8 @@ exports.shortcutByID = function (req, res, next, id) {
 
 function redirectShortcut(req, res, next) {
   if (!req.shortcut) {
-    return next();
+    // go to full url if no shortcut found
+    res.redirect('http://directactioneverywhere.com' + req.url);
   }
 
   res.redirect(req.shortcut.target);
