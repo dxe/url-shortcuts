@@ -7,7 +7,8 @@ var config = require('../config'),
   mongooseService = require('./mongoose'),
   express = require('./express'),
   chalk = require('chalk'),
-  seed = require('./mongo-seed');
+  seed = require('./mongo-seed'),
+  Sentry = require('@sentry/node');
 
 function seedDB() {
   if (config.seedDB && config.seedDB.seed) {
@@ -24,6 +25,9 @@ module.exports.init = function init(callback) {
     // Initialize express
     var app = express.init(db);
     if (callback) callback(app, db, config);
+
+    // Initialize Sentry
+    Sentry.init({ dsn: 'https://da2964c09e444527b2f4e94af089ab26@sentry.io/1839634' });
 
   });
 };
