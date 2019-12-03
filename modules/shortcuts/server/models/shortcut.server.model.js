@@ -37,6 +37,9 @@ var ShortcutSchema = new Schema({
   },
   lastVisit: {
     type: Date
+  },
+  totalVisits: {
+    type: Number
   }
 });
 

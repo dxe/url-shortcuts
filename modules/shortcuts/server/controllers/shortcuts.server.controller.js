@@ -145,16 +145,17 @@ exports.shortcutByID = function (req, res, next, id) {
 };
 
 function redirectShortcut(req, res, next) {
-  if (!req.shortcut) {
-    // go to full url if no shortcut found
-    // TODO: IF TRYING TO GO TO /shortcuts OR SOMETHING SIMILAR, WE NEED TO GO TO next()
-    if (req.url !== '/shortcuts') {
-      res.redirect('http://directactioneverywhere.com' + req.url);
-    } else {
-      return next();
-    }
+  // go to admin page
+  if (req.url === '/shortcuts') {
+    return next();
   }
 
+  // go to url on website
+  if (!req.shortcut) {
+    res.redirect('http://directactioneverywhere.com' + req.url);
+  }
+
+  // go to shortcut
   res.redirect(req.shortcut.target);
 }
 
@@ -191,6 +192,22 @@ function shortcutByCode(req, res, next, code) {
       }
 
       req.shortcut = shortcuts[0];
+
+      // log analytics
+      console.log("Referer: " + req.headers.referer);
+      Shortcut.findOneAndUpdate(
+        { code: code },
+        {
+          $set: { lastVisit: Date.now() },
+          $inc: { totalVisits: 1 }
+        },
+        (err, doc) => {
+          if (err) {
+            return next(new Error('Something went wrong!'));
+          }
+        }
+      );
+
       return next();
     })
     .catch(function (err) {
