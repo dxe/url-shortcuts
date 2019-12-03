@@ -150,20 +150,19 @@ function redirectShortcut(req, res, next) {
     return next();
   }
 
-  // redirect to shortcut if it exists
-  if (req.shortcut) {
-
-    // update lastVisit date in database
-    var shortcut = req.shortcut;
-    shortcut.lastVisit = new Date;
-    shortcut.save();
-
-    // do the actual redirect
-    res.redirect(req.shortcut.target);
+  // redirect to website if shortcut not found
+  if (!req.shortcut) {
+    res.redirect('http://directactioneverywhere.com' + req.url);
   }
 
-  // redirect to website if shortcut not found
-  res.redirect('http://directactioneverywhere.com' + req.url);
+  // update lastVisit date in database
+  var shortcut = req.shortcut;
+  shortcut.lastVisit = new Date;
+  shortcut.save();
+
+  // do the actual redirect
+  res.redirect(req.shortcut.target);
+  
 }
 
 function shortcutByCode(req, res, next, code) {
