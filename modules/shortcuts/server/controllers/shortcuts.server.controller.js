@@ -194,7 +194,7 @@ function shortcutByCode(req, res, next, code) {
       req.shortcut = shortcuts[0];
 
       // log analytics
-      console.log("Referer: " + req.headers.referer);
+      console.log('Referer: ' + req.headers.referer);
       Shortcut.findOneAndUpdate(
         { code: code },
         {
