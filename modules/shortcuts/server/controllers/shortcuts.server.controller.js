@@ -145,17 +145,25 @@ exports.shortcutByID = function (req, res, next, id) {
 };
 
 function redirectShortcut(req, res, next) {
-  if (!req.shortcut) {
-    // go to full url if no shortcut found
-    // TODO: IF TRYING TO GO TO /shortcuts OR SOMETHING SIMILAR, WE NEED TO GO TO next()
-    if (req.url !== '/shortcuts') {
-      res.redirect('http://directactioneverywhere.com' + req.url);
-    } else {
-      return next();
-    }
+  // user trying to access admin page
+  if (req.url === '/shortcuts') {
+    return next();
   }
 
-  res.redirect(req.shortcut.target);
+  // redirect to shortcut if it exists
+  if (req.shortcut) {
+
+    // update lastVisit date in database
+    var shortcut = req.shortcut;
+    shortcut.lastVisit = new Date;
+    shortcut.save();
+
+    // do the actual redirect
+    res.redirect(req.shortcut.target);
+  }
+
+  // redirect to website if shortcut not found
+  res.redirect('http://directactioneverywhere.com' + req.url);
 }
 
 function shortcutByCode(req, res, next, code) {

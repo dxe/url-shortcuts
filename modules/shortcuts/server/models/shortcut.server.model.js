@@ -34,6 +34,9 @@ var ShortcutSchema = new Schema({
   user: {
     type: Schema.ObjectId,
     ref: 'User'
+  },
+  lastVisit: {
+    type: Date
   }
 });
 
