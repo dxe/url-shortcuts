@@ -129,9 +129,13 @@ exports.shortcutByID = function (req, res, next, id) {
     });
   }
 
+  console.log('Finding by ID!');
+
   Shortcut
     .findById(id)
     .populate('user', 'displayName')
+    // trying this
+    .populate('analytics', 'analytics')
     .exec(function (err, shortcut) {
       if (err) {
         return next(err);
@@ -140,6 +144,7 @@ exports.shortcutByID = function (req, res, next, id) {
           message: 'No shortcut with that identifier has been found'
         });
       }
+      console.log(shortcut);
       req.shortcut = shortcut;
       next();
     });
