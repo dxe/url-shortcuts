@@ -134,8 +134,7 @@ exports.shortcutByID = function (req, res, next, id) {
   Shortcut
     .findById(id)
     .populate('user', 'displayName')
-    // trying this
-    .populate('analytics')
+    // TODO(jake): figure out a way to populate analytics data
     .exec(function (err, shortcut) {
       if (err) {
         return next(err);
@@ -144,7 +143,7 @@ exports.shortcutByID = function (req, res, next, id) {
           message: 'No shortcut with that identifier has been found'
         });
       }
-      console.log(shortcut);
+      // console.log(shortcut);
       req.shortcut = shortcut;
       next();
     });
