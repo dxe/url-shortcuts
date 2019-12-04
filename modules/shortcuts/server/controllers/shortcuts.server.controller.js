@@ -195,8 +195,8 @@ function shortcutByCode(req, res, next, code) {
       req.shortcut = shortcuts[0];
 
       // log basic analytics data to shortcut
-      Shortcut.findOneAndUpdate(
-        { code: code },
+      Shortcut.findByIdAndUpdate(
+        req.shortcut._id,
         {
           $set: { lastVisit: Date.now() },
           $inc: { totalVisits: 1 }
