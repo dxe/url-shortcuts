@@ -208,10 +208,10 @@ function shortcutByCode(req, res, next, code) {
         }
       );
       // insert full data into analytics collection
-      console.log('Referer: ' + req.headers.referer);
-      console.log(req.shortcut._id);
       var analytics = new Analytics({
-        shortcut: req.shortcut._id
+        shortcut: req.shortcut._id,
+        referer: req.headers.referer,
+        ip: req.ip
       });
       analytics.save((err) => {
         if (err) return next(new Error('Something went wrong!'));

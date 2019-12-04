@@ -62,6 +62,10 @@ var AnalyticsSchema = new Schema({
   referer: {
     type: String,
     trim: true
+  },
+  ip: {
+    type: String,
+    trim: true
   }
 });
 
