@@ -5,8 +5,8 @@
         <h3 ng-bind="vm.shortcut.code"></h3>
         <h4 ng-bind="vm.shortcut.target"></h4>
         <div>
-          Last visit: <span ng-bind="vm.shortcut.lastVisit | date:'medium'">0</span><br />
-          Total visits: <span ng-bind="vm.shortcut.totalVisits">0</span>
+          Last visit: <span ng-bind="vm.shortcut.lastVisit ? (vm.shortcut.lastVisit | date:'medium') : '0'"></span><br />
+          Total visits: <span ng-bind="vm.shortcut.totalVisits ? vm.shortcut.totalVisits : '0'"></span>
         </div>
       </div>
       <div class="col-md-4">

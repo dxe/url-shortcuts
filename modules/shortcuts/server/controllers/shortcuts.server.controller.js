@@ -211,7 +211,7 @@ function shortcutByCode(req, res, next, code) {
       var analytics = new Analytics({
         shortcut: req.shortcut._id,
         referer: req.headers.referer,
-        ip: req.connection.remoteAddress
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress;
       });
       analytics.save((err) => {
         if (err) return next(new Error('Something went wrong!'));
