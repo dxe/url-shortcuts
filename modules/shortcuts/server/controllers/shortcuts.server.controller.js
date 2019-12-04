@@ -6,6 +6,7 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Shortcut = mongoose.model('Shortcut'),
+  Analytics = mongoose.model('Analytics'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   url = require('url');
 
@@ -193,20 +194,28 @@ function shortcutByCode(req, res, next, code) {
 
       req.shortcut = shortcuts[0];
 
-      // log analytics
-      console.log('Referer: ' + req.headers.referer);
+      // log basic analytics data to shortcut
       Shortcut.findOneAndUpdate(
         { code: code },
         {
           $set: { lastVisit: Date.now() },
           $inc: { totalVisits: 1 }
         },
-        (err, doc) => {
+        (err) => {
           if (err) {
             return next(new Error('Something went wrong!'));
           }
         }
       );
+      // insert full data into analytics collection
+      console.log('Referer: ' + req.headers.referer);
+      console.log(req.shortcut._id);
+      var analytics = new Analytics({
+        shortcut: req.shortcut._id
+      });
+      analytics.save((err) => {
+        if (err) return next(new Error('Something went wrong!'));
+      });
 
       return next();
     })
