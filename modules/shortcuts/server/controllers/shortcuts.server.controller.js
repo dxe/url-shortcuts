@@ -135,7 +135,7 @@ exports.shortcutByID = function (req, res, next, id) {
     .findById(id)
     .populate('user', 'displayName')
     // trying this
-    .populate('analytics', 'analytics')
+    .populate('analytics')
     .exec(function (err, shortcut) {
       if (err) {
         return next(err);
