@@ -40,7 +40,8 @@ var ShortcutSchema = new Schema({
   },
   totalVisits: {
     type: Number
-  }
+  },
+  analytics: [ { type: String, ref: 'Analytics' } ]
 });
 
 ShortcutSchema.statics.seed = seed;
