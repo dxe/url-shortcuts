@@ -4,7 +4,7 @@
  * Module dependencies
  */
 var passport = require('passport'),
-  GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
+  GoogleStrategy = require('passport-google-oauth20').Strategy,
   users = require('../../controllers/users.server.controller');
 
 module.exports = function (config) {
@@ -27,7 +27,7 @@ module.exports = function (config) {
       lastName: profile.name.familyName,
       displayName: profile.displayName,
       email: profile.emails[0].value,
-      username: profile.username,
+      username: profile.emails[0].value,
       profileImageURL: (providerData.picture) ? providerData.picture : undefined,
       provider: 'google',
       providerIdentifierField: 'id',
