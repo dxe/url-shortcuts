@@ -30,6 +30,8 @@ exports.create = function (req, res) {
   var shortcut = new Shortcut(req.body);
   shortcut.user = req.user;
 
+  console.log(req.user + 'has created a shortcut!')
+
   shortcut.target = formatShortcutTarget(shortcut.target);
 
   if (restrictedShortcutCodes.indexOf(shortcut.code) !== -1) {
