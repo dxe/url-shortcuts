@@ -6,6 +6,7 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Shortcut = mongoose.model('Shortcut'),
+  Analytics = mongoose.model('Analytics'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   url = require('url');
 
@@ -28,6 +29,8 @@ function formatShortcutTarget(target) {
 exports.create = function (req, res) {
   var shortcut = new Shortcut(req.body);
   shortcut.user = req.user;
+
+  console.log(req.user + 'has created a shortcut!')
 
   shortcut.target = formatShortcutTarget(shortcut.target);
 
@@ -128,9 +131,12 @@ exports.shortcutByID = function (req, res, next, id) {
     });
   }
 
+  console.log('Finding by ID!');
+
   Shortcut
     .findById(id)
     .populate('user', 'displayName')
+    // TODO(jake): figure out a way to populate analytics data
     .exec(function (err, shortcut) {
       if (err) {
         return next(err);
@@ -139,22 +145,25 @@ exports.shortcutByID = function (req, res, next, id) {
           message: 'No shortcut with that identifier has been found'
         });
       }
+      // console.log(shortcut);
       req.shortcut = shortcut;
       next();
     });
 };
 
 function redirectShortcut(req, res, next) {
-  if (!req.shortcut) {
-    // go to full url if no shortcut found
-    // TODO: IF TRYING TO GO TO /shortcuts OR SOMETHING SIMILAR, WE NEED TO GO TO next()
-    if (req.url !== '/shortcuts') {
-      res.redirect('http://directactioneverywhere.com' + req.url + '/?dxesl=' + req.shortcut.target);
-    } else {
-      return next();
-    }
+  // go to admin page
+  if (req.url === '/shortcuts' || req.url === '/shortcuts/') {
+    return next();
   }
 
+  // go to url on website
+  if (!req.shortcut) {
+    // go to full url if no shortcut found
+    res.redirect('http://directactioneverywhere.com' + req.url + '/?dxesl=' + req.shortcut.target);
+  }
+
+  // go to shortcut
   res.redirect(req.shortcut.target + '/?dxesl=' + req.shortcut.target);
 }
 
@@ -191,6 +200,30 @@ function shortcutByCode(req, res, next, code) {
       }
 
       req.shortcut = shortcuts[0];
+
+      // log basic analytics data to shortcut
+      Shortcut.findByIdAndUpdate(
+        req.shortcut._id,
+        {
+          $set: { lastVisit: Date.now() },
+          $inc: { totalVisits: 1 }
+        },
+        (err) => {
+          if (err) {
+            return next(new Error('Something went wrong!'));
+          }
+        }
+      );
+      // insert full data into analytics collection
+      var analytics = new Analytics({
+        shortcut: req.shortcut._id,
+        referer: req.headers.referer,
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+      });
+      analytics.save((err) => {
+        if (err) return next(new Error('Something went wrong!'));
+      });
+
       return next();
     })
     .catch(function (err) {

@@ -37,12 +37,39 @@ var ShortcutSchema = new Schema({
   },
   lastVisit: {
     type: Date
+  },
+  totalVisits: {
+    type: Number
   }
 });
 
 ShortcutSchema.statics.seed = seed;
 
 mongoose.model('Shortcut', ShortcutSchema);
+
+/**
+ * Analytics Schema
+ */
+var AnalyticsSchema = new Schema({
+  timestamp: {
+    type: Date,
+    default: Date.now
+  },
+  shortcut: {
+    type: Schema.ObjectId,
+    ref: 'Shortcut'
+  },
+  referer: {
+    type: String,
+    trim: true
+  },
+  ip: {
+    type: String,
+    trim: true
+  }
+});
+
+mongoose.model('Analytics', AnalyticsSchema);
 
 /**
 * Seeds the User collection with document (Shortcut)
