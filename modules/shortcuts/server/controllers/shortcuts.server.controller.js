@@ -155,16 +155,14 @@ function redirectShortcut(req, res, next) {
     return next();
   }
 
-  let urlAppend = '?dxesl=' + req.shortcut.code;
-
   // go to url on website
   if (!req.shortcut) {
     // go to full url if no shortcut found
-    res.redirect('http://directactioneverywhere.com' + req.url + urlAppend);
+    res.redirect('http://directactioneverywhere.com' + req.url);
   }
 
   // go to shortcut
-  res.redirect(req.shortcut.target + urlAppend);
+  res.redirect(req.shortcut.target);
 }
 
 function shortcutByCode(req, res, next, code) {
