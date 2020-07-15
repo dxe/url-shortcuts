@@ -155,7 +155,7 @@ function redirectShortcut(req, res, next) {
     return next();
   }
 
-  let urlAppend = req.url.indexOf('?' !== -1) ? '&dxesl=' + req.shortcut.code : '?dxesl=' + req.shortcut.code;
+  let urlAppend = '?dxesl=' + req.shortcut.code;
 
   // go to url on website
   if (!req.shortcut) {
